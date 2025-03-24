@@ -168,7 +168,7 @@ fi
 echo "----- Showing stats for $WARMUP seconds"
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-  pidstat -p $quarkus_pid 1 &
+  pidstat -p $quarkus_pid -u -r 1 &
   pidstat_pid=$!
   sleep $WARMUP
   kill -SIGTERM $pidstat_pid
