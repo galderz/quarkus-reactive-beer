@@ -192,6 +192,11 @@ fi
 
 wait $wrk_pid
 
+if [ "${NATIVE}" = true ]; then
+  echo "----- Native binary size"
+  ls -lha ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner
+fi
+
 echo "----- Profiling and workload completed: killing server"
 
 kill -SIGTERM $quarkus_pid
@@ -199,11 +204,6 @@ kill -SIGTERM $quarkus_pid
 if [ "${RECORD}" = true ]; then
   sleep 1
   perf script -F +pid > ./firefox.perf
-fi
-
-if [ "${NATIVE}" = true ]; then
-  echo "----- Native binary size"
-  ls -lha ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner
 fi
 
 # to produce the flamegraph in svg format
