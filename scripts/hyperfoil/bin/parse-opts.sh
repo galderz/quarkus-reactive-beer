@@ -53,7 +53,6 @@ if [ -n "$LOG_FILE" ]; then
 fi
 JAVA_OPTS="$JAVA_OPTS $LOG_OPTS \
    --add-opens java.base/java.lang=ALL-UNNAMED \
-   -Djava.net.preferIPv4Stack=true \
    -Dio.hyperfoil.distdir=$ROOT"
 
 # Code taken from https://stackoverflow.com/questions/7334754/correct-way-to-check-java-version-from-bash-script
@@ -94,11 +93,11 @@ jdk_version() {
 if [ -z "$NO_JAVA_CHECK" ]; then
   JAVA_VERSION="$(jdk_version)"
   if [ $JAVA_VERSION = "no_java" ]; then
-    echo "Cannot find Java. Hyperfoil requires Java 11 or newer."
+    echo "Cannot find Java. Hyperfoil requires Java 17 or newer."
     echo "If you want to skip this check please export NO_JAVA_CHECK=true"
     exit 1;
-  elif [ $JAVA_VERSION -lt 11 ]; then
-    echo "Found Java $JAVA_VERSION but Hyperfoil requires Java 11 or newer."
+  elif [ $JAVA_VERSION -lt 17 ]; then
+    echo "Found Java $JAVA_VERSION but Hyperfoil requires Java 17 or newer."
     echo "If you want to skip this check please export NO_JAVA_CHECK=true"
     exit 1;
   fi

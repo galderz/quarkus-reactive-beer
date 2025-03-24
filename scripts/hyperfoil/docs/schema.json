@@ -1,13 +1,13 @@
 {
   "$schema" : "http://json-schema.org/draft-07/schema",
-  "$id" : "http://hyperfoil.io/schema",
+  "$id" : "http://hyperfoil.io/schema.json",
   "description" : "Hyperfoil benchmark configuration",
   "type" : "object",
   "additionalProperties" : false,
   "required" : [ "name", "http" ],
   "properties" : {
     "$schema" : {
-      "description" : "This should point to either http://hyperfoil.io/schema or local file",
+      "description" : "This should point to either http://hyperfoil.io/schema.json or local file",
       "type" : "string"
     },
     "name" : {
@@ -359,6 +359,10 @@
               "type" : "string"
             }
           }
+        },
+        "useHttpCache" : {
+          "description" : "Make use of HTTP cache on client-side. If multiple authorities are involved, disable the HTTP cache for all of them to achieve the desired outcomes. The default is true except for wrk/wrk2 wrappers where it is set to false.\n",
+          "type" : "boolean"
         }
       }
     },
