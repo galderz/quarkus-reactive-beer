@@ -201,5 +201,10 @@ if [ "${RECORD}" = true ]; then
   perf script -F +pid > ./firefox.perf
 fi
 
+if [ "${NATIVE}" = true ]; then
+  echo "----- Native binary size"
+  ls -lha ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner
+fi
+
 # to produce the flamegraph in svg format
 # perf script -i perf.data | ~/FlameGraph/stackcollapse-perf.pl | ~/FlameGraph/flamegraph.pl > flamegraph_g.svg
