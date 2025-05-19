@@ -120,7 +120,8 @@ fi
 trap 'echo "cleaning up quarkus process";kill ${quarkus_pid}' SIGINT SIGTERM SIGKILL
 
 if [ "${NATIVE}" = true ]; then
-  ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner -Dquarkus.vertx.event-loops-pool-size=${THREADS} &
+# ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner -Dquarkus.vertx.event-loops-pool-size=${THREADS} &
+  numactl --localalloc --physcpubind=29,30 ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner -Dquarkus.vertx.event-loops-pool-size=${THREADS} &
 elif [ "${STARTUP}" = true ]; then
   timeout 3s perf record -e cycles -F 10000 --call-graph dwarf ../target/quarkus-reactive-beer-1.0.0-SNAPSHOT-runner -Dquarkus.vertx.event-loops-pool-size=${THREADS}
   perf script -F +pid > ./startup_firefox.perf
@@ -136,7 +137,9 @@ sleep 2
 echo "----- Quarkus running at pid $quarkus_pid using ${THREADS} I/O threads"
 
 echo "----- Start all-out test and profiling"
-${HYPERFOIL_HOME}/bin/wrk.sh -c ${CONNECTIONS} -t ${THREADS} -d ${DURATION}s ${FULL_URL} &
+numactl --localalloc --cpunodebind=1-6 ${HYPERFOIL_HOME}/bin/wrk.sh -c ${CONNECTIONS} -t ${THREADS} -d ${DURATION}s ${FULL_URL} &
+#numactl --localalloc --cpunodebind=1-6 ${HYPERFOIL_HOME}/bin/wrk2.sh -c ${CONNECTIONS} -t ${THREADS} -d ${DURATION}s -R 74000 ${FULL_URL} &
+#${HYPERFOIL_HOME}/bin/wrk.sh -c ${CONNECTIONS} -t ${THREADS} -d ${DURATION}s ${FULL_URL} &
 
 wrk_pid=$!
 
@@ -154,7 +157,8 @@ fi
 
 if [ "${PERF}" = true ]; then
   echo "----- Collecting perf stat on $quarkus_pid"
-  perf stat -d -p $quarkus_pid &
+  perf stat -e branches,cycles,instructions -d -p $quarkus_pid &
+#  perf stat -d -p $quarkus_pid &
   stat_pid=$!
 fi
 
